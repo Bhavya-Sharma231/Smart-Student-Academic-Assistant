@@ -1,0 +1,526 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+struct Student
+{
+    int sid;
+    char name[50];
+    char course[20];
+    int semester;
+    char section[10];
+};
+
+struct Subject
+{
+    int subject_id;
+    char subname[50];
+    float marks;
+};
+
+struct Assignment
+{
+    int assignment_id;
+    char subject[50];
+    char title[100];
+    int deadline;
+    int difficulty;
+    char status[20];
+int priority;
+    struct Assignment *next;
+};
+struct Assignment *head = NULL;
+
+struct Assignment *queue[10];
+
+int front = -1;
+int rear = -1;
+
+char studyStack[10][50];
+int top = -1;
+struct Assignment *priorityQueue[10];
+
+int pfront = -1;
+int prear = -1;
+
+void enqueue(struct Assignment *assignment);
+void calculatePriority(struct Assignment *assignment);
+void priorityEnqueue(struct Assignment *assignment);
+void priorityDequeue();
+void sortSubjects(struct Subject sub[], int n)
+{
+    int i, j;
+
+    for(i = 0; i < n - 1; i++)
+    {
+        for(j = 0; j < n - i - 1; j++)
+        {
+            if(sub[j].marks < sub[j + 1].marks)
+            {
+                struct Subject temp;
+
+                temp = sub[j];
+                sub[j] = sub[j + 1];
+                sub[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void searchSubject(struct Subject sub[], int n)
+{
+    char search[50];
+    int i, found = 0;
+
+    printf("\nEnter subject to search: ");
+    scanf(" %[^\n]", search);
+
+    for(i = 0; i < n; i++)
+    {
+        if(strcmp(search, sub[i].subname) == 0)
+        {
+            printf("\nSubject Found!\n");
+            printf("Subject: %s\n", sub[i].subname);
+            printf("Marks: %.2f\n", sub[i].marks);
+
+            found = 1;
+            break;
+        }
+    }
+
+    if(found == 0)
+    {
+        printf("\nSubject not found.\n");
+    }
+}
+
+void weakSubjects(struct Subject sub[], int n)
+{
+    int i;
+
+    printf("\n===== SUBJECTS NEEDING ATTENTION =====\n");
+
+    for(i = 0; i < n; i++)
+    {
+        if(sub[i].marks < 50)
+        {
+            printf("%s - %.2f marks\n", sub[i].subname, sub[i].marks);
+            printf("Priority: HIGH\n");
+        }
+        else if(sub[i].marks <= 70)
+        {
+            printf("%s - %.2f marks\n", sub[i].subname, sub[i].marks);
+            printf("Priority: MEDIUM\n");
+        }
+    }
+}
+
+void performanceSummary(struct Subject sub[], int n, float average)
+{
+    int i;
+    int highindex = 0, lowindex = 0;
+    float highest, lowest;
+
+    highest = sub[0].marks;
+    lowest = sub[0].marks;
+
+    for(i = 1; i < n; i++)
+    {
+        if(sub[i].marks > highest)
+        {
+            highest = sub[i].marks;
+            highindex = i;
+        }
+
+        if(sub[i].marks < lowest)
+        {
+            lowest = sub[i].marks;
+            lowindex = i;
+        }
+    }
+
+    printf("\n===== PERFORMANCE SUMMARY =====\n");
+
+    printf("Average Marks : %.2f\n", average);
+    printf("Highest Marks : %.2f\n", highest);
+    printf("Strongest Subject : %s\n", sub[highindex].subname);
+    printf("Lowest Marks : %.2f\n", lowest);
+    printf("Weakest Subject : %s\n", sub[lowindex].subname);
+}
+
+void addAssignment()
+{
+    struct Assignment *newnode;
+
+    newnode = (struct Assignment*)malloc(sizeof(struct Assignment));
+
+    printf("\nEnter Assignment ID: ");
+    scanf("%d", &newnode->assignment_id);
+
+    printf("Enter Subject: ");
+    scanf(" %[^\n]", newnode->subject);
+
+    printf("Enter Assignment Title: ");
+    scanf(" %[^\n]", newnode->title);
+
+    printf("Enter Deadline (days left): ");
+    scanf("%d", &newnode->deadline);
+calculatePriority(newnode);
+    printf("Enter Difficulty (1-5): ");
+    scanf("%d", &newnode->difficulty);
+
+    printf("Enter Status (Pending/Completed): ");
+    scanf(" %[^\n]", newnode->status);
+
+   newnode->next = head;
+head = newnode;
+enqueue(newnode);
+priorityEnqueue(newnode);
+printf("\nAssignment added successfully!\n");
+
+
+}
+
+void displayAssignments()
+{
+    struct Assignment *temp;
+
+    temp = head;
+
+    printf("\n===== ASSIGNMENT LIST =====\n");
+
+    if(temp == NULL)
+    {
+        printf("No assignments available.\n");
+        return;
+    }
+
+    while(temp != NULL)
+    {
+        printf("\nAssignment ID : %d\n", temp->assignment_id);
+        printf("Subject       : %s\n", temp->subject);
+        printf("Title         : %s\n", temp->title);
+        printf("Deadline      : %d days\n", temp->deadline);
+        printf("Difficulty    : %d/5\n", temp->difficulty);
+        printf("Status        : %s\n", temp->status);
+
+        temp = temp->next;
+    }
+}
+
+void enqueue(struct Assignment *assignment)
+{
+    if(rear == 9)
+    {
+        printf("\nQueue is full.\n");
+        return;
+    }
+
+    if(front == -1)
+    {
+        front = 0;
+    }
+
+    rear++;
+    queue[rear] = assignment;
+
+    printf("\nAssignment added to pending queue.\n");
+}
+
+void dequeue()
+{
+    if(front == -1 || front > rear)
+    {
+        printf("\nQueue is empty.\n");
+        return;
+    }
+
+    printf("\nProcessing Assignment ID: %d\n",
+           queue[front]->assignment_id);
+
+    front++;
+
+    if(front > rear)
+    {
+        front = -1;
+        rear = -1;
+    }
+}
+
+void calculatePriority(struct Assignment *assignment)
+{
+    if(assignment->deadline <= 2)
+    {
+        assignment->priority = 1;
+    }
+    else if(assignment->deadline <= 5)
+    {
+        assignment->priority = 2;
+    }
+    else
+    {
+        assignment->priority = 3;
+    }
+}
+
+void priorityEnqueue(struct Assignment *assignment)
+{
+    int i;
+
+    if(prear == 9)
+    {
+        printf("\nPriority Queue is full.\n");
+        return;
+    }
+
+    if(pfront == -1)
+    {
+        pfront = 0;
+    }
+
+    prear++;
+
+    i = prear;
+
+    while(i > pfront &&
+          priorityQueue[i - 1]->priority > assignment->priority)
+    {
+        priorityQueue[i] = priorityQueue[i - 1];
+        i--;
+    }
+
+    priorityQueue[i] = assignment;
+
+    printf("\nAssignment added to priority queue.\n");
+}
+
+void priorityDequeue()
+{
+    int i;
+
+    if(pfront == -1 || pfront > prear)
+    {
+        printf("\nPriority Queue is empty.\n");
+        return;
+    }
+
+    printf("\nProcessing Highest Priority Assignment:\n");
+    printf("Assignment ID: %d\n",
+           priorityQueue[pfront]->assignment_id);
+    printf("Subject: %s\n",
+           priorityQueue[pfront]->subject);
+    printf("Title: %s\n",
+           priorityQueue[pfront]->title);
+    printf("Priority: %d\n",
+           priorityQueue[pfront]->priority);
+
+    for(i = pfront; i < prear; i++)
+    {
+        priorityQueue[i] = priorityQueue[i + 1];
+    }
+
+    prear--;
+
+    if(prear < pfront)
+    {
+        pfront = -1;
+        prear = -1;
+    }
+}
+
+void pushTopic()
+{
+    if(top == 9)
+    {
+        printf("\nStudy History Stack is full.\n");
+        return;
+    }
+
+    top++;
+
+    printf("\nEnter studied topic: ");
+    scanf(" %[^\n]", studyStack[top]);
+
+    printf("Topic added to study history.\n");
+}
+
+void popTopic()
+{
+    if(top == -1)
+    {
+        printf("\nNo study history available.\n");
+        return;
+    }
+
+    printf("\nRecently studied topic: %s\n", studyStack[top]);
+
+    top--;
+}
+
+void displayStudyHistory()
+{
+    int i;
+
+    if(top == -1)
+    {
+        printf("\nNo study history available.\n");
+        return;
+    }
+
+    printf("\n===== RECENT STUDY HISTORY =====\n");
+
+    for(i = top; i >= 0; i--)
+    {
+        printf("%s\n", studyStack[i]);
+    }
+}
+int main()
+{
+    struct Student s;
+    struct Subject sub[10];
+
+    int n, i,choice;
+    float total = 0, average;
+
+    printf("===== SMART STUDENT ACADEMIC ASSISTANT =====\n\n");
+
+    printf("Enter Student ID: ");
+    scanf("%d", &s.sid);
+
+    printf("Enter Student Name: ");
+    scanf(" %[^\n]", s.name);
+
+    printf("Enter Course: ");
+    scanf(" %[^\n]", s.course);
+
+    printf("Enter Semester: ");
+    scanf("%d", &s.semester);
+
+    printf("Enter Section: ");
+    scanf(" %[^\n]", s.section);
+
+    printf("\nEnter number of subjects: ");
+    scanf("%d", &n);
+
+    for(i = 0; i < n; i++)
+    {
+        printf("\nEnter details for Subject %d\n", i + 1);
+
+        printf("Enter Subject ID: ");
+        scanf("%d", &sub[i].subject_id);
+
+        printf("Enter Subject Name: ");
+        scanf(" %[^\n]", sub[i].subname);
+
+        printf("Enter Marks: ");
+        scanf("%f", &sub[i].marks);
+
+        total = total + sub[i].marks;
+    }
+
+
+    average = total / n;
+
+ do
+{
+    printf("\n===== SMART STUDENT ACADEMIC ASSISTANT =====\n");
+    printf("1. View Academic Record\n");
+    printf("2. Search Subject\n");
+    printf("3. Sort Subjects by Marks\n");
+    printf("4. Check Weak Subjects\n");
+    printf("5. Performance Summary\n");
+    printf("6. Add Assignment\n");
+    printf("7. Display Assignments \n");
+    printf("8. Process Next Assignment\n");
+    printf("9. Process Highest Priority Assignment\n");
+        printf("10. Add Studied Topic\n");
+            printf("11. View Recent Study History\n");
+                printf("12. Remove Most Recent Topic\n");
+    printf("10. Exit\n");
+
+    printf("\nEnter your choice: ");
+    scanf("%d", &choice);
+
+    switch(choice)
+    {
+        case 1:
+            printf("\n===== STUDENT ACADEMIC RECORD =====\n");
+
+            printf("Student ID : %d\n", s.sid);
+            printf("Name       : %s\n", s.name);
+            printf("Course     : %s\n", s.course);
+            printf("Semester   : %d\n", s.semester);
+            printf("Section    : %s\n", s.section);
+
+            printf("\nSubject Records:\n");
+
+            for(i = 0; i < n; i++)
+            {
+                printf("Subject ID %d | %s - %.2f marks\n",
+                       sub[i].subject_id,
+                       sub[i].subname,
+                       sub[i].marks);
+            }
+            break;
+
+        case 2:
+            searchSubject(sub, n);
+            break;
+
+        case 3:
+            sortSubjects(sub, n);
+
+            printf("\n===== SUBJECTS RANKED BY MARKS =====\n");
+
+            for(i = 0; i < n; i++)
+            {
+                printf("Rank %d | Subject ID %d | %s - %.2f marks\n",
+                       i + 1,
+                       sub[i].subject_id,
+                       sub[i].subname,
+                       sub[i].marks);
+            }
+            break;
+
+        case 4:
+            weakSubjects(sub, n);
+            break;
+
+        case 5:
+            performanceSummary(sub, n, average);
+            break;
+           case 6:
+           addAssignment();
+            break;
+            case 7:
+    displayAssignments();
+    break;
+case 8:
+    dequeue();
+    break;
+    case 9:
+    priorityDequeue();
+    break;
+case 10:
+    pushTopic();
+    break;
+
+case 11:
+    displayStudyHistory();
+    break;
+
+case 12:
+    popTopic();
+    break;
+        case 13:
+            printf("\nThank you for using Smart Student Academic Assistant!\n");
+            break;
+
+        default:
+            printf("\nInvalid choice. Please try again.\n");
+    }
+
+} while(choice != 13);
+
+return 0;
+}
