@@ -11,9 +11,9 @@ struct Student
     char section[10];
 };
 
-struct Subject
+struct subject
 {
-    int subject_id;
+    int subid;
     char subname[50];
     float marks;
 };
@@ -67,7 +67,7 @@ void sortSubjects(struct Subject sub[], int n)
     }
 }
 
-void searchSubject(struct Subject sub[], int n)
+void searchsubject(struct subject sub[], int n)
 {
     char search[50];
     int i, found = 0;
@@ -94,7 +94,7 @@ void searchSubject(struct Subject sub[], int n)
     }
 }
 
-void weakSubjects(struct Subject sub[], int n)
+void weaksubjects(struct subject sub[], int n)
 {
     int i;
 
@@ -115,7 +115,7 @@ void weakSubjects(struct Subject sub[], int n)
     }
 }
 
-void performanceSummary(struct Subject sub[], int n, float average)
+void performanceSummary(struct subject sub[], int n, float average)
 {
     int i;
     int highindex = 0, lowindex = 0;
@@ -377,7 +377,7 @@ void displayStudyHistory()
 int main()
 {
     struct Student s;
-    struct Subject sub[10];
+    struct subject sub[10];
 
     int n, i,choice;
     float total = 0, average;
@@ -407,7 +407,7 @@ int main()
         printf("\nEnter details for Subject %d\n", i + 1);
 
         printf("Enter Subject ID: ");
-        scanf("%d", &sub[i].subject_id);
+        scanf("%d", &sub[i].subid);
 
         printf("Enter Subject Name: ");
         scanf(" %[^\n]", sub[i].subname);
@@ -457,18 +457,18 @@ int main()
             for(i = 0; i < n; i++)
             {
                 printf("Subject ID %d | %s - %.2f marks\n",
-                       sub[i].subject_id,
+                       sub[i].subid,
                        sub[i].subname,
                        sub[i].marks);
             }
             break;
 
         case 2:
-            searchSubject(sub, n);
+            searchsubject(sub, n);
             break;
 
         case 3:
-            sortSubjects(sub, n);
+            sortsubjects(sub, n);
 
             printf("\n===== SUBJECTS RANKED BY MARKS =====\n");
 
@@ -476,14 +476,14 @@ int main()
             {
                 printf("Rank %d | Subject ID %d | %s - %.2f marks\n",
                        i + 1,
-                       sub[i].subject_id,
+                       sub[i].subid,
                        sub[i].subname,
                        sub[i].marks);
             }
             break;
 
         case 4:
-            weakSubjects(sub, n);
+            weaksubjects(sub, n);
             break;
 
         case 5:
