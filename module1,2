@@ -2,13 +2,13 @@
 #include <string.h>
 #include <stdlib.h>
 
-struct Student
+struct student
 {
     int sid;
     char name[50];
     char course[20];
-    int semester;
-    char section[10];
+    int seme;
+    char sec[10];
 };
 
 struct subject
@@ -376,7 +376,7 @@ void displayStudyHistory()
 }
 int main()
 {
-    struct Student s;
+    struct student s;
     struct subject sub[10];
 
     int n, i,choice;
@@ -394,10 +394,10 @@ int main()
     scanf(" %[^\n]", s.course);
 
     printf("Enter Semester: ");
-    scanf("%d", &s.semester);
+    scanf("%d", &s.sem);
 
     printf("Enter Section: ");
-    scanf(" %[^\n]", s.section);
+    scanf(" %[^\n]", s.sec);
 
     printf("\nEnter number of subjects: ");
     scanf("%d", &n);
@@ -449,8 +449,8 @@ int main()
             printf("Student ID : %d\n", s.sid);
             printf("Name       : %s\n", s.name);
             printf("Course     : %s\n", s.course);
-            printf("Semester   : %d\n", s.semester);
-            printf("Section    : %s\n", s.section);
+            printf("Semester   : %d\n", s.sem);
+            printf("Section    : %s\n", s.sec);
 
             printf("\nSubject Records:\n");
 
