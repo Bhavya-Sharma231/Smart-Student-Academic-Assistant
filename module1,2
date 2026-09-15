@@ -7,7 +7,7 @@ struct student
     int sid;
     char name[50];
     char course[20];
-    int seme;
+    int sem;
     char sec[10];
 };
 
@@ -47,7 +47,7 @@ void enqueue(struct Assignment *assignment);
 void calculatePriority(struct Assignment *assignment);
 void priorityEnqueue(struct Assignment *assignment);
 void priorityDequeue();
-void sortSubjects(struct Subject sub[], int n)
+void sortsubjects(struct subject sub[], int n)
 {
     int i, j;
 
@@ -57,7 +57,7 @@ void sortSubjects(struct Subject sub[], int n)
         {
             if(sub[j].marks < sub[j + 1].marks)
             {
-                struct Subject temp;
+                struct subject temp;
 
                 temp = sub[j];
                 sub[j] = sub[j + 1];
