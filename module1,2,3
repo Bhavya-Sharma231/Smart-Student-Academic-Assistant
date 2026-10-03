@@ -18,7 +18,7 @@ struct subject
     float marks;
 };
 
-struct Assignment
+struct assignment
 {
     int assignment_id;
     char subject[50];
@@ -27,10 +27,10 @@ struct Assignment
     int difficulty;
     char status[20];
 int priority;
-    struct Assignment *next;
+    struct assignment *next;
 };
 
-struct Topic
+struct topic
 {
     int topic_id;
     char subject[50];
@@ -38,11 +38,11 @@ struct Topic
     int status;
 };
 
-struct Topic topics[50];
-int topicCount = 0;
+struct topic topics[50];
+int topiccount = 0;
 int graph[50][50] = {0};
 
-void loadTopics()
+void loadtopics()
 {
     topics[0].topic_id = 1;
     strcpy(topics[0].subject, "Data Structure");
@@ -156,7 +156,7 @@ topics[21].status = 0;
 
 topics[22].topic_id = 23;
 strcpy(topics[22].subject, "Foundations of Artificial Intelligence");
-strcpy(topics[22].topic_name, "BFS, DFS and Adversarial Search");
+strcpy(topics[22].topic_name, "bfs, dfs and Adversarial Search");
 topics[22].status = 0;
 
 topics[23].topic_id = 24;
@@ -224,9 +224,9 @@ strcpy(topics[35].subject, "Introduction to DBMS");
 strcpy(topics[35].topic_name, "Deadlocks and Recovery");
 topics[35].status = 0;
 
-topicCount = 36;
+topiccount = 36;
 }
-void createTopicGraph()
+void createtopicgraph()
 {
     graph[0][1] = 1;
     graph[1][2] = 1;
@@ -262,17 +262,17 @@ graph[33][34] = 1;
 graph[34][35] = 1;
 }
 
-void displayTopicGraph()
+void displaytopicgraph()
 {
     int i, j;
 
     printf("\n===== TOPIC DEPENDENCY GRAPH =====\n");
 
-    for(i = 0; i < topicCount; i++)
+    for(i = 0; i < topiccount; i++)
     {
         printf("\n%s -> ", topics[i].topic_name);
 
-        for(j = 0; j < topicCount; j++)
+        for(j = 0; j < topiccount; j++)
         {
             if(graph[i][j] == 1)
             {
@@ -282,7 +282,7 @@ void displayTopicGraph()
     }
 }
 
-void BFS(int start)
+void bfs(int start)
 {
     int visited[50] = {0};
     int queue[50];
@@ -293,7 +293,7 @@ void BFS(int start)
     queue[rear] = start;
     rear++;
 
-    printf("\n===== BFS STUDY PATH =====\n");
+    printf("\n===== bfs STUDY PATH =====\n");
 
     while(front < rear)
     {
@@ -302,7 +302,7 @@ void BFS(int start)
 
         printf("%s\n", topics[current].topic_name);
 
-        for(i = 0; i < topicCount; i++)
+        for(i = 0; i < topiccount; i++)
         {
             if(graph[current][i] == 1 && visited[i] == 0)
             {
@@ -313,7 +313,7 @@ void BFS(int start)
         }
     }
 }
-void DFS(int current, int visited[])
+void dfs(int current, int visited[])
 {
     int i;
 
@@ -321,58 +321,58 @@ void DFS(int current, int visited[])
 
     printf("%s\n", topics[current].topic_name);
 
-    for(i = 0; i < topicCount; i++)
+    for(i = 0; i < topiccount; i++)
     {
         if(graph[current][i] == 1 && visited[i] == 0)
         {
-            DFS(i, visited);
+            dfs(i, visited);
         }
     }
 }
-void markTopicCompleted()
+void marktopiccompleted()
 {
     int id;
     int i;
 
-    printf("\nEnter Topic ID to mark as completed: ");
+    printf("\nenter topic ID to mark as completed: ");
     scanf("%d", &id);
 
-    for(i = 0; i < topicCount; i++)
+    for(i = 0; i < topiccount; i++)
     {
         if(topics[i].topic_id == id)
         {
             topics[i].status = 1;
 
-            printf("\nTopic marked as completed!\n");
-            printf("Topic: %s\n", topics[i].topic_name);
+            printf("\ntopic marked as completed!\n");
+            printf("topic: %s\n", topics[i].topic_name);
 
             return;
         }
     }
 
-    printf("\nInvalid Topic ID.\n");
+    printf("\ninvalid topic ID.\n");
 }
 
-void checkPrerequisite()
+void checkprerequisite()
 {
     int id;
     int i;
 
-    printf("\nEnter Topic ID to check prerequisite: ");
+    printf("\nenter topic ID to check prerequisite: ");
     scanf("%d", &id);
 
-    if(id < 1 || id > topicCount)
+    if(id < 1 || id > topiccount)
     {
-        printf("\nInvalid Topic ID.\n");
+        printf("\ninvalid topic ID.\n");
         return;
     }
 
     id = id - 1;
 
     printf("\n===== PREREQUISITE CHECK =====\n");
-    printf("Topic: %s\n", topics[id].topic_name);
+    printf("topic: %s\n", topics[id].topic_name);
 
-    for(i = 0; i < topicCount; i++)
+    for(i = 0; i < topiccount; i++)
     {
         if(graph[i][id] == 1)
         {
@@ -389,18 +389,18 @@ void checkPrerequisite()
         }
     }
 }
-void suggestNextTopic()
+void suggestnexttopic()
 {
     int id;
     int i;
     int found = 0;
 
-    printf("\nEnter completed Topic ID: ");
+    printf("\nenter completed topic ID: ");
     scanf("%d", &id);
 
-    if(id < 1 || id > topicCount)
+    if(id < 1 || id > topiccount)
     {
-        printf("\nInvalid Topic ID.\n");
+        printf("\ninvalid topic ID.\n");
         return;
     }
 
@@ -408,7 +408,7 @@ void suggestNextTopic()
 
     printf("\n===== SUGGESTED NEXT TOPICS =====\n");
 
-    for(i = 0; i < topicCount; i++)
+    for(i = 0; i < topiccount; i++)
     {
         if(graph[id][i] == 1 && topics[i].status == 0)
         {
@@ -422,18 +422,18 @@ void suggestNextTopic()
         printf("No new topic suggested from this topic.\n");
     }
 }
-void studyRecommendation()
+void studyrecommendation()
 {
     int i, j;
     int found = 0;
 
     printf("\n===== STUDY RECOMMENDATIONS =====\n");
 
-    for(i = 0; i < topicCount; i++)
+    for(i = 0; i < topiccount; i++)
     {
         if(topics[i].status == 0)
         {
-            for(j = 0; j < topicCount; j++)
+            for(j = 0; j < topiccount; j++)
             {
                 if(graph[j][i] == 1 && topics[j].status == 0)
                 {
@@ -453,7 +453,7 @@ void studyRecommendation()
     }
 }
 
-void displaySubjectTopics()
+void displaysubjecttopics()
 {
     int choice;
     int i;
@@ -465,20 +465,20 @@ void displaySubjectTopics()
     printf("3. Foundations of Artificial Intelligence\n");
     printf("4. Introduction to DBMS\n");
 
-    printf("\nEnter your choice: ");
+    printf("\nenter your choice: ");
     scanf("%d", &choice);
 
     printf("\n===== SUBJECT TOPICS =====\n");
 
-    for(i = 0; i < topicCount; i++)
+    for(i = 0; i < topiccount; i++)
     {
         if((choice == 1 && strcmp(topics[i].subject, "Data Structure") == 0) ||
            (choice == 2 && strcmp(topics[i].subject, "Digital Logic Design") == 0) ||
            (choice == 3 && strcmp(topics[i].subject, "Foundations of Artificial Intelligence") == 0) ||
            (choice == 4 && strcmp(topics[i].subject, "Introduction to DBMS") == 0))
         {
-            printf("\nTopic ID : %d\n", topics[i].topic_id);
-            printf("Topic    : %s\n", topics[i].topic_name);
+            printf("\ntopic ID : %d\n", topics[i].topic_id);
+            printf("topic    : %s\n", topics[i].topic_name);
 
             if(topics[i].status == 1)
                 printf("Status   : Completed\n");
@@ -491,20 +491,20 @@ void displaySubjectTopics()
 
     if(found == 0)
     {
-        printf("\nInvalid subject choice.\n");
+        printf("\ninvalid subject choice.\n");
     }
 }
-void displayTopics()
+void displaytopics()
 {
     int i;
 
     printf("\n===== 3RD SEMESTER DATA STRUCTURE TOPICS =====\n");
 
-    for(i = 0; i < topicCount; i++)
+    for(i = 0; i < topiccount; i++)
     {
-        printf("\nTopic ID : %d\n", topics[i].topic_id);
+        printf("\ntopic ID : %d\n", topics[i].topic_id);
         printf("Subject  : %s\n", topics[i].subject);
-        printf("Topic    : %s\n", topics[i].topic_name);
+        printf("topic    : %s\n", topics[i].topic_name);
 
         if(topics[i].status == 1)
         {
@@ -516,25 +516,25 @@ void displayTopics()
         }
     }
 }
-struct Assignment *head = NULL;
+struct assignment *head = NULL;
 
-struct Assignment *queue[10];
+struct assignment *queue[10];
 
 int front = -1;
 int rear = -1;
 
-char studyStack[10][50];
+char studystack[10][50];
 int top = -1;
-struct Assignment *priorityQueue[10];
+struct assignment *priorityqueue[10];
 
 int pfront = -1;
 int prear = -1;
 
-void enqueue(struct Assignment *assignment);
-void calculatePriority(struct Assignment *assignment);
-void priorityEnqueue(struct Assignment *assignment);
-void priorityDequeue();
-void sortSubjects(struct subject sub[], int n)
+void enqueue(struct assignment *assignment);
+void calculatepriority(struct assignment *assignment);
+void priorityenqueue(struct assignment *assignment);
+void prioritydequeue();
+void sortsubjects(struct subject sub[], int n)
 {
     int i, j;
 
@@ -554,19 +554,19 @@ void sortSubjects(struct subject sub[], int n)
     }
 }
 
-void searchSubject(struct subject sub[], int n)
+void searchsubject(struct subject sub[], int n)
 {
     char search[50];
     int i, found = 0;
 
-    printf("\nEnter subject to search: ");
+    printf("\nenter subject to search: ");
     scanf(" %[^\n]", search);
 
     for(i = 0; i < n; i++)
     {
         if(strcmp(search, sub[i].subname) == 0)
         {
-            printf("\nSubject Found!\n");
+            printf("\nsubject Found!\n");
             printf("Subject: %s\n", sub[i].subname);
             printf("Marks: %.2f\n", sub[i].marks);
 
@@ -577,11 +577,11 @@ void searchSubject(struct subject sub[], int n)
 
     if(found == 0)
     {
-        printf("\nSubject not found.\n");
+        printf("\nsubject not found.\n");
     }
 }
 
-void weakSubjects(struct subject sub[], int n)
+void weaksubjects(struct subject sub[], int n)
 {
     int i;
 
@@ -602,7 +602,7 @@ void weakSubjects(struct subject sub[], int n)
     }
 }
 
-void performanceSummary(struct subject sub[], int n, float average)
+void performancesummary(struct subject sub[], int n, float average)
 {
     int i;
     int highindex = 0, lowindex = 0;
@@ -635,24 +635,24 @@ void performanceSummary(struct subject sub[], int n, float average)
     printf("Weakest Subject : %s\n", sub[lowindex].subname);
 }
 
-void addAssignment()
+void addassignment()
 {
-    struct Assignment *newnode;
+    struct assignment *newnode;
 
-    newnode = (struct Assignment*)malloc(sizeof(struct Assignment));
+    newnode = (struct assignment*)malloc(sizeof(struct assignment));
 
-    printf("\nEnter Assignment ID: ");
+    printf("\nenter assignment ID: ");
     scanf("%d", &newnode->assignment_id);
 
     printf("Enter Subject: ");
     scanf(" %[^\n]", newnode->subject);
 
-    printf("Enter Assignment Title: ");
+    printf("Enter assignment Title: ");
     scanf(" %[^\n]", newnode->title);
 
     printf("Enter Deadline (days left): ");
     scanf("%d", &newnode->deadline);
-calculatePriority(newnode);
+calculatepriority(newnode);
     printf("Enter Difficulty (1-5): ");
     scanf("%d", &newnode->difficulty);
 
@@ -662,15 +662,15 @@ calculatePriority(newnode);
    newnode->next = head;
 head = newnode;
 enqueue(newnode);
-priorityEnqueue(newnode);
-printf("\nAssignment added successfully!\n");
+priorityenqueue(newnode);
+printf("\nassignment added successfully!\n");
 
 
 }
 
-void displayAssignments()
+void displayassignments()
 {
-    struct Assignment *temp;
+    struct assignment *temp;
 
     temp = head;
 
@@ -684,7 +684,7 @@ void displayAssignments()
 
     while(temp != NULL)
     {
-        printf("\nAssignment ID : %d\n", temp->assignment_id);
+        printf("\nassignment ID : %d\n", temp->assignment_id);
         printf("Subject       : %s\n", temp->subject);
         printf("Title         : %s\n", temp->title);
         printf("Deadline      : %d days\n", temp->deadline);
@@ -695,11 +695,11 @@ void displayAssignments()
     }
 }
 
-void enqueue(struct Assignment *assignment)
+void enqueue(struct assignment *assignment)
 {
     if(rear == 9)
     {
-        printf("\nQueue is full.\n");
+        printf("\nqueue is full.\n");
         return;
     }
 
@@ -711,18 +711,18 @@ void enqueue(struct Assignment *assignment)
     rear++;
     queue[rear] = assignment;
 
-    printf("\nAssignment added to pending queue.\n");
+    printf("\nassignment added to pending queue.\n");
 }
 
 void dequeue()
 {
     if(front == -1 || front > rear)
     {
-        printf("\nQueue is empty.\n");
+        printf("\nqueue is empty.\n");
         return;
     }
 
-    printf("\nProcessing Assignment ID: %d\n",
+    printf("\nprocessing assignment ID: %d\n",
            queue[front]->assignment_id);
 
     front++;
@@ -734,7 +734,7 @@ void dequeue()
     }
 }
 
-void calculatePriority(struct Assignment *assignment)
+void calculatepriority(struct assignment *assignment)
 {
     if(assignment->deadline <= 2)
     {
@@ -750,13 +750,13 @@ void calculatePriority(struct Assignment *assignment)
     }
 }
 
-void priorityEnqueue(struct Assignment *assignment)
+void priorityenqueue(struct assignment *assignment)
 {
     int i;
 
     if(prear == 9)
     {
-        printf("\nPriority Queue is full.\n");
+        printf("\npriority Queue is full.\n");
         return;
     }
 
@@ -770,40 +770,40 @@ void priorityEnqueue(struct Assignment *assignment)
     i = prear;
 
     while(i > pfront &&
-          priorityQueue[i - 1]->priority > assignment->priority)
+          priorityqueue[i - 1]->priority > assignment->priority)
     {
-        priorityQueue[i] = priorityQueue[i - 1];
+        priorityqueue[i] = priorityqueue[i - 1];
         i--;
     }
 
-    priorityQueue[i] = assignment;
+    priorityqueue[i] = assignment;
 
-    printf("\nAssignment added to priority queue.\n");
+    printf("\nassignment added to priority queue.\n");
 }
 
-void priorityDequeue()
+void prioritydequeue()
 {
     int i;
 
     if(pfront == -1 || pfront > prear)
     {
-        printf("\nPriority Queue is empty.\n");
+        printf("\npriority Queue is empty.\n");
         return;
     }
 
-    printf("\nProcessing Highest Priority Assignment:\n");
-    printf("Assignment ID: %d\n",
-           priorityQueue[pfront]->assignment_id);
+    printf("\nprocessing Highest Priority assignment:\n");
+    printf("assignment ID: %d\n",
+           priorityqueue[pfront]->assignment_id);
     printf("Subject: %s\n",
-           priorityQueue[pfront]->subject);
+           priorityqueue[pfront]->subject);
     printf("Title: %s\n",
-           priorityQueue[pfront]->title);
+           priorityqueue[pfront]->title);
     printf("Priority: %d\n",
-           priorityQueue[pfront]->priority);
+           priorityqueue[pfront]->priority);
 
     for(i = pfront; i < prear; i++)
     {
-        priorityQueue[i] = priorityQueue[i + 1];
+        priorityqueue[i] = priorityqueue[i + 1];
     }
 
     prear--;
@@ -815,42 +815,42 @@ void priorityDequeue()
     }
 }
 
-void pushTopic()
+void pushtopic()
 {
     if(top == 9)
     {
-        printf("\nStudy History Stack is full.\n");
+        printf("\nstudy History Stack is full.\n");
         return;
     }
 
     top++;
 
-    printf("\nEnter studied topic: ");
-    scanf(" %[^\n]", studyStack[top]);
+    printf("\nenter studied topic: ");
+    scanf(" %[^\n]", studystack[top]);
 
-    printf("Topic added to study history.\n");
+    printf("topic added to study history.\n");
 }
 
-void popTopic()
+void poptopic()
 {
     if(top == -1)
     {
-        printf("\nNo study history available.\n");
+        printf("\nno study history available.\n");
         return;
     }
 
-    printf("\nRecently studied topic: %s\n", studyStack[top]);
+    printf("\nrecently studied topic: %s\n", studystack[top]);
 
     top--;
 }
 
-void displayStudyHistory()
+void displaystudyhistory()
 {
     int i;
 
     if(top == -1)
     {
-        printf("\nNo study history available.\n");
+        printf("\nno study history available.\n");
         return;
     }
 
@@ -858,12 +858,12 @@ void displayStudyHistory()
 
     for(i = top; i >= 0; i--)
     {
-        printf("%s\n", studyStack[i]);
+        printf("%s\n", studystack[i]);
     }
 }
 int main()
-{loadTopics();
-createTopicGraph();
+{loadtopics();
+createtopicgraph();
     struct student s;
     struct subject sub[10];
 
@@ -887,12 +887,12 @@ createTopicGraph();
     printf("Enter Section: ");
     scanf(" %[^\n]", s.sec);
 
-    printf("\nEnter number of subjects: ");
+    printf("\nenter number of subjects: ");
     scanf("%d", &n);
 
     for(i = 0; i < n; i++)
     {
-        printf("\nEnter details for Subject %d\n", i + 1);
+        printf("\nenter details for Subject %d\n", i + 1);
 
         printf("Enter Subject ID: ");
         scanf("%d", &sub[i].subid);
@@ -921,28 +921,28 @@ printf("4. Check Weak Subjects\n");
 printf("5. Performance Summary\n");
 
 printf("\n----- ASSIGNMENT & STUDY HISTORY -----\n");
-printf("6. Add Assignment\n");
+printf("6. Add assignment\n");
 printf("7. Display Assignments\n");
-printf("8. Process Next Assignment\n");
-printf("9. Process Highest Priority Assignment\n");
-printf("10. Add Studied Topic\n");
+printf("8. Process Next assignment\n");
+printf("9. Process Highest Priority assignment\n");
+printf("10. Add Studied topic\n");
 printf("11. View Recent Study History\n");
-printf("12. Remove Most Recent Topic\n");
+printf("12. Remove Most Recent topic\n");
 
 printf("\n----- STUDY TOPICS & GRAPH -----\n");
 printf("14. Display Study Topics\n");
-printf("15. Display Topic Dependency Graph\n");
-printf("16. Find Study Path using BFS\n");
-printf("17. Find Study Path using DFS\n");
-printf("18. Mark Topic as Completed\n");
-printf("19. Check Topic Prerequisite\n");
-printf("20. Suggest Next Topic\n");
+printf("15. Display topic Dependency Graph\n");
+printf("16. Find Study Path using bfs\n");
+printf("17. Find Study Path using dfs\n");
+printf("18. Mark topic as Completed\n");
+printf("19. Check topic Prerequisite\n");
+printf("20. Suggest Next topic\n");
 printf("21. Study Recommendations\n");
 printf("22. View Topics by Subject\n");
 
 printf("\n13. Exit\n");
 
-printf("\nEnter your choice: ");
+printf("\nenter your choice: ");
 scanf("%d", &choice);
 
     switch(choice)
@@ -956,7 +956,7 @@ scanf("%d", &choice);
             printf("Semester   : %d\n", s.sem);
             printf("Section    : %s\n", s.sec);
 
-            printf("\nSubject Records:\n");
+            printf("\nsubject Records:\n");
 
             for(i = 0; i < n; i++)
             {
@@ -968,11 +968,11 @@ scanf("%d", &choice);
             break;
 
         case 2:
-            searchSubject(sub, n);
+            searchsubject(sub, n);
             break;
 
         case 3:
-            sortSubjects(sub, n);
+            sortsubjects(sub, n);
 
             printf("\n===== SUBJECTS RANKED BY MARKS =====\n");
 
@@ -987,58 +987,58 @@ scanf("%d", &choice);
             break;
 
         case 4:
-            weakSubjects(sub, n);
+            weaksubjects(sub, n);
             break;
 
         case 5:
-            performanceSummary(sub, n, average);
+            performancesummary(sub, n, average);
             break;
            case 6:
-           addAssignment();
+           addassignment();
             break;
             case 7:
-    displayAssignments();
+    displayassignments();
     break;
 case 8:
     dequeue();
     break;
     case 9:
-    priorityDequeue();
+    prioritydequeue();
     break;
 case 10:
-    pushTopic();
+    pushtopic();
     break;
 
 case 11:
-    displayStudyHistory();
+    displaystudyhistory();
     break;
 
 case 12:
-    popTopic();
+    poptopic();
     break;
         case 13:
-            printf("\nThank you for using Smart Student Academic Assistant!\n");
+            printf("\nthank you for using Smart Student Academic Assistant!\n");
             break;
             case 14:
-    displayTopics();
+    displaytopics();
     break;
     case 15:
-    displayTopicGraph();
+    displaytopicgraph();
     break;
     case 16:
 {
     int start;
 
-    printf("\nEnter starting Topic ID (1-36): ");
+    printf("\nenter starting topic ID (1-36): ");
     scanf("%d", &start);
 
-    if(start >= 1 && start <= topicCount)
+    if(start >= 1 && start <= topiccount)
     {
-        BFS(start - 1);
+        bfs(start - 1);
     }
     else
     {
-        printf("\nInvalid Topic ID.\n");
+        printf("\ninvalid topic ID.\n");
     }
 
     break;
@@ -1048,42 +1048,43 @@ case 17:
     int start;
     int visited[50] = {0};
 
-    printf("\nEnter starting Topic ID (1-36): ");
+    printf("\nenter starting topic ID (1-36): ");
     scanf("%d", &start);
 
-    if(start >= 1 && start <= topicCount)
+    if(start >= 1 && start <= topiccount)
     {
-        printf("\n===== DFS STUDY PATH =====\n");
-        DFS(start - 1, visited);
+        printf("\n===== dfs STUDY PATH =====\n");
+        dfs(start - 1, visited);
     }
     else
     {
-        printf("\nInvalid Topic ID.\n");
+        printf("\ninvalid topic ID.\n");
     }
 
     break;
 }
 case 18:
-    markTopicCompleted();
+    marktopiccompleted();
     break;
     case 19:
-    checkPrerequisite();
+    checkprerequisite();
     break;
     case 20:
-    suggestNextTopic();
+    suggestnexttopic();
     break;
     case 21:
-    studyRecommendation();
+    studyrecommendation();
     break;
     case 22:
-    displaySubjectTopics();
+    displaysubjecttopics();
     break;
 
         default:
-            printf("\nInvalid choice. Please try again.\n");
+            printf("\ninvalid choice. Please try again.\n");
     }
 
 } while(choice != 13);
 
 return 0;
 }
+
